@@ -109,6 +109,15 @@ BrowserView::BrowserView(QWidget* parent)
     view->page()->setPalette(palette);
     view->setAttribute(Qt::WA_OpaquePaintEvent, true);
 
+//enable html5 localstorage
+    QWebView w;
+
+    w.settings()->globalSettings()->setAttribute(QWebSettings::LocalStorageEnabled, true);
+    w.settings()->globalSettings()->setAttribute(QWebSettings::OfflineStorageDatabaseEnabled, true);
+    w.settings()->globalSettings()->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, true);
+    QWebSettings::setOfflineStorageDefaultQuota(5*1024*1024); // this could be set higher, if needed.
+    QWebSettings::setOfflineWebApplicationCacheQuota(5*1024*1024); // this could be set higher, if needed.
+
     connect(view, SIGNAL(loadStarted()),
             this, SLOT(onLoadStarted()));
     connect(view, SIGNAL(loadProgress(int)),
