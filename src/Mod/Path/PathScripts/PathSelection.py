@@ -98,7 +98,9 @@ def multiSelect():
     Select just a face, an edge,or two edges to indicate direction, a vertex on the object, a point not on the object,
     or some combination. Returns a dictionary.
     '''
+
     sel = FreeCADGui.Selection.getSelectionEx()
+
     numobjs = len([selobj.Object for selobj in sel])
     if numobjs == 0:
         FreeCAD.Console.PrintError('Please select some objects and try again.\n')
@@ -125,6 +127,7 @@ def multiSelect():
     selItems['edgelist']=None #some edges that could be selected along with points and faces
     selItems['edgenames']=None
     selItems['pathwire']=None #the whole wire around edges of the face
+    selItems['pathwires']=None #all wires on the face
     selItems['clockwise']=None
     selItems['circles']=None
     facenames = []
@@ -187,17 +190,23 @@ def multiSelect():
             selItems['pathwire'] =s.Object.Shape
             selItems['edgelist'] =edgelist
         else:
+            goodwires =[]
             for w in s.Object.Shape.Wires:
+                #if they are on same plane in Z as sel edge
+                if (w.BoundBox.ZMax==w.BoundBox.ZMin) and (w.BoundBox.ZMax==edge.BoundBox.ZMax):
+                    goodwires.append(w)
+
+            for w in goodwires:
                 for e in  w.Edges:
-                    if e.BoundBox.ZMax == e.BoundBox.ZMin: #if they are on same plane in Z as sel edge
-                        if e.isSame(edge):
-                            pathwire = w
-                            selItems['pathwire']  =pathwire
+                    if e.isSame(edge):
+                        pathwire = w
+                        selItems['pathwire']  =pathwire
             selItems['edgelist'] =edgelist
 
     if not edges:
         if face:
             selItems['pathwire']  =facelist[0].OuterWire
+            selItems['pathwires']  =facelist[0].Wires
 
     if edges and (len(edgelist)>=2):
         vlist,edgestart,edgecommon=Sort2Edges(edgelist)
