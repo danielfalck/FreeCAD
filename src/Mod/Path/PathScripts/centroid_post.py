@@ -48,8 +48,8 @@ HEADER += ";Post Processor: " + __name__ +"\n"
 HEADER += ";CAM file: "+originfile+"\n"
 HEADER += ";Output Time:"+str(now)+"\n"
 
-TOOLRETURN = '''M5 M25
-G49 H0\n''' #spindle off,height offset canceled,spindle retracted (M25 is a centroid command to retract spindle)
+TOOLRETURN = '''M5 
+M25\n''' #spindle off,spindle retracted (M25 is a centroid command to retract spindle)
 
 ZAXISRETURN = '''G91 G28 X0 Z0
 G90\n'''
