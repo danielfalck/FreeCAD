@@ -65,6 +65,8 @@ class PathProfile:
         obj.addProperty("App::PropertyEnumeration", "Side", "Profile", translate("Side","Side of edge that tool should cut"))
         obj.Side = ['left','right','on'] #side of profile that cutter is on in relation to direction of profile
         obj.addProperty("App::PropertyEnumeration", "Direction", "Profile",translate("Direction", "The direction that the toolpath should go around the part ClockWise CW or CounterClockWise CCW"))
+        obj.addProperty("App::PropertyIntegerConstraint","DiameterNumber","Profile",translate("DiameterNumber","The tool diameter number -usually the tool number to use for cutter comp"))
+        obj.DiameterNumber = (0,0,1000,1) 
         obj.Direction = ['CW','CCW'] #this is the direction that the profile runs
         obj.addProperty("App::PropertyBool","UseComp","Profile",translate("Use Cutter Comp","make True, if using Cutter Radius Compensation"))
         obj.addProperty("App::PropertyIntegerList","Edgelist","Profile",translate("Edge List", "List of edges selected"))
@@ -121,6 +123,7 @@ class PathProfile:
             self.side=obj.Side
             self.offset_extra=obj.OffsetExtra.Value
             self.use_CRC=obj.UseComp
+            self.dnum= obj.DiameterNumber
             self.vf=obj.VertFeed.Value
             self.hf=obj.HorizFeed.Value
 
@@ -142,7 +145,7 @@ class PathProfile:
 
             output=PathKurveUtils.makePath(edgelist,self.side,self.radius,self.vf,self.hf,self.offset_extra, \
                    self.rapid_safety_space,self.clearance,self.start_depth,self.step_down, \
-                   self.final_depth,self.use_CRC,obj.Direction,self.startpt,self.endpt)
+                   self.final_depth,self.use_CRC,self.dnum,obj.Direction,self.startpt,self.endpt)
 
             if obj.Active:
                 path = Path.Path(output)
@@ -239,6 +242,7 @@ def profileop():
 
     if tl:
         obj.ToolNumber = tl
+        obj.DiameterNumber = tl
 
 
 from PathScripts import PathProject,PathUtils,PathKurve, PathKurveUtils,PathSelection

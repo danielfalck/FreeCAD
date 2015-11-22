@@ -119,7 +119,7 @@ def makeAreaCurve(edges,direction,startpt=None,endpt=None):
 # side_of_line should be 'left' or 'right' or 'on'
 def profile(curve,side_of_line,radius=1.0,vertfeed=0.0,horizfeed=0.0,offset_extra=0.0, \
             rapid_safety_space=None,clearance=None,start_depth=None,stepdown=None, \
-            final_depth=None,use_CRC=False, \
+            final_depth=None,use_CRC=False,dnum=None, \
             roll_on=None,roll_off=None,roll_start=False,roll_end=True,roll_radius=None, \
             roll_start_pt=None,roll_end_pt=None):
 
@@ -206,9 +206,9 @@ def profile(curve,side_of_line,radius=1.0,vertfeed=0.0,horizfeed=0.0,offset_extr
         " F"+str(PathUtils.fmt(vertfeed))+"\n"
         if use_CRC:
             if side_of_line == 'left':
-                output +="G41"+"\n"
+                output +="G41 D"+str(dnum)+"\n"
             else:
-                output +="G42"+"\n"
+                output +="G42 D"+str(dnum)+"\n"
         # cut the main kurve
         current_perim = 0.0
         lastx=offset_curve.GetFirstSpan().p.x
@@ -244,12 +244,12 @@ def profile(curve,side_of_line,radius=1.0,vertfeed=0.0,horizfeed=0.0,offset_extr
 
     return output
 
-def makePath(edges,side,radius,vertfeed,horizfeed,offset_extra,rapid_safety_space,clearance,start_depth,step_down,final_depth,use_CRC,direction,startpt=None,endpt=None):
+def makePath(edges,side,radius,vertfeed,horizfeed,offset_extra,rapid_safety_space,clearance,start_depth,step_down,final_depth,use_CRC,dnum,direction,startpt=None,endpt=None):
 
     curve = makeAreaCurve(edges,direction,startpt, endpt)
     if direction == 'CW':
         curve.Reverse()
-    path = profile(curve,side,radius,vertfeed,horizfeed,offset_extra,rapid_safety_space,clearance,start_depth,step_down,final_depth,use_CRC)
+    path = profile(curve,side,radius,vertfeed,horizfeed,offset_extra,rapid_safety_space,clearance,start_depth,step_down,final_depth,use_CRC,dnum)
     del curve
     return path
 

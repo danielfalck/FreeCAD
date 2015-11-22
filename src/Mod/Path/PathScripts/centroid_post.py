@@ -70,7 +70,7 @@ if open.__module__ == '__builtin__':
     pythonopen = open
 
 def export(selection,filename):
-    params = ['X','Y','Z','A','B','I','J','F','H','S','T','Q','R','L'] #Using XY plane most of the time so skipping K
+    params = ['X','Y','Z','A','B','I','J','F','H','S','T','D','Q','R','L'] #Using XY plane most of the time so skipping K
     for obj in selection:
         if not hasattr(obj,"Path"):
             print "the object " + obj.Name + " is not a path. Please select only path and Compounds."
@@ -125,6 +125,8 @@ def export(selection,filename):
                             outstring.append(param + PostUtils.fmt(c.Parameters['S'], SPINDLE_DECIMALS,'G21')) #rpm is unitless-therefore I had to 'fake it out' by using metric units which don't get converted from entered value
                         elif param == 'T':
                             outstring.append(param + str(int(c.Parameters['T'])))
+                        elif param == 'D':    
+                            outstring.append(param + str(int(c.Parameters['D'])))
                         else:
                             outstring.append(param + PostUtils.fmt(c.Parameters[param],AXIS_DECIMALS,UNITS))
             outstr = str(outstring)
